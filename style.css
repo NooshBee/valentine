@@ -25,6 +25,13 @@ body{
   padding: 0;
 }
 
+.overlay,
+.proposal,
+.gift,
+.burst{
+  z-index: 20;
+}
+
 /* =========================
    HEADER D’ACCUEIL (fade)
    ========================= */
