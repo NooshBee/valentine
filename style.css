@@ -25,6 +25,11 @@ body{
   padding: 0;
 }
 
+/* Quand on affiche un écran (overlay/proposal/gift), on cache le message d’accueil */
+.app.screen-open #top{
+  display: none;
+}
+
 .top{
   position:absolute;
   left:50%;
