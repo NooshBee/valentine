@@ -322,9 +322,9 @@ function onFlowerClick(flower){
   // bougain
   showOverlay(flower, () => {
     // ✅ proposition = header caché aussi
-    topHeader.classList.add("hidden");
+    topHeader.classList.add("hideTop");
 
-    proposal.classList.remove("hidden");
+    proposal.classList.remove("hidTop");
     startProposalTimer();
     isLocked = false;
   });
