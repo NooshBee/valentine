@@ -120,7 +120,6 @@ const FLOWERS = [
   }
 ];
 
-
 // ======================
 // STATE
 // ======================
@@ -129,6 +128,9 @@ const overlay = document.getElementById("overlay");
 const proposal = document.getElementById("proposal");
 const gift = document.getElementById("gift");
 const burst = document.getElementById("burst");
+
+// ✅ header accueil
+const topHeader = document.querySelector(".top");
 
 const overlayFlower = document.getElementById("overlayFlower");
 const overlayTitle = document.getElementById("overlayTitle");
@@ -167,6 +169,9 @@ function hideAllScreens(){
   proposal.classList.add("hidden");
   gift.classList.add("hidden");
   burst.classList.add("hidden");
+
+  // ✅ par défaut, l'accueil doit afficher le header
+  topHeader.classList.remove("hidden");
 }
 
 function resetToHome(){
@@ -266,6 +271,9 @@ function showOverlay(flower, onDone){
   isLocked = true;
   hideAllScreens();
 
+  // ✅ on cache le header d'accueil pendant l'overlay
+  topHeader.classList.add("hidden");
+
   // image dans l’overlay
   overlayFlower.innerHTML = "";
   const big = document.createElement("img");
@@ -313,6 +321,9 @@ function onFlowerClick(flower){
 
   // bougain
   showOverlay(flower, () => {
+    // ✅ proposition = header caché aussi
+    topHeader.classList.add("hidden");
+
     proposal.classList.remove("hidden");
     startProposalTimer();
     isLocked = false;
@@ -329,6 +340,9 @@ function playGiftSequence(includeBougain){
 
   // attente 5s après choix
   setTimeout(() => {
+    // ✅ cadeau = header caché aussi
+    topHeader.classList.add("hidden");
+
     gift.classList.remove("hidden");
     setupTapToOpenGift(includeBougain);
     isLocked = false;
