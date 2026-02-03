@@ -1,1 +1,250 @@
+:root{
+  --bg1:#0b0b14;
+  --bg2:#1a1033;
+  --card: rgba(255,255,255,0.10);
+  --card2: rgba(255,255,255,0.14);
+  --text:#ffffff;
+  --muted: rgba(255,255,255,0.75);
+  --shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
 
+*{ box-sizing: border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  color: var(--text);
+  font-family: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 800px at 50% 10%, #331b66 0%, var(--bg2) 40%, var(--bg1) 100%);
+  overflow:hidden;
+}
+
+.app{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  padding: 18px 14px;
+}
+
+.top{
+  text-align:center;
+  margin-top: 10px;
+}
+h1{
+  margin:0;
+  font-size: 1.55rem;
+  letter-spacing: 0.2px;
+}
+#subtitle{
+  margin:8px 0 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.field{
+  position: relative;
+  flex: 1;
+  margin-top: 10px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  overflow:hidden;
+}
+
+/* Fleurs cliquables */
+.flower{
+  position:absolute;
+  width: 54px;
+  height: 54px;
+  display:grid;
+  place-items:center;
+  font-size: 34px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.08);
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
+  cursor:pointer;
+  transform: translate(-50%,-50%);
+}
+
+.flower:active{
+  transform: translate(-50%,-50%) scale(0.95);
+}
+
+@keyframes floatUp {
+  0%   { transform: translate(-50%,-50%) translateY(40px); opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { transform: translate(-50%,-50%) translateY(-20px); }
+  100% { transform: translate(-50%,-50%) translateY(-140px); opacity: 0; }
+}
+
+@keyframes sway {
+  0%   { margin-left: -6px; }
+  50%  { margin-left:  6px; }
+  100% { margin-left: -6px; }
+}
+
+.overlay, .proposal, .gift{
+  position: absolute;
+  inset: 0;
+  display:grid;
+  place-items:center;
+  padding: 18px;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+}
+
+.hidden{ display:none; }
+
+.card{
+  width:min(520px, 92vw);
+  border-radius: 18px;
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: var(--shadow);
+  padding: 18px 16px;
+  text-align:center;
+}
+
+.bigFlower{
+  font-size: 54px;
+  margin-bottom: 8px;
+}
+
+#overlayTitle{
+  margin: 6px 0 4px 0;
+  font-size: 1.25rem;
+}
+#overlayText{
+  margin: 8px 0 6px 0;
+  color: rgba(255,255,255,0.90);
+  line-height: 1.35;
+}
+.hint{
+  margin: 10px 0 0 0;
+  color: rgba(255,255,255,0.70);
+  font-size: 0.95rem;
+}
+
+.proposalCard h2{
+  margin: 10px 0 14px 0;
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+.buttons{
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.btn{
+  width:100%;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: var(--card2);
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 650;
+  cursor:pointer;
+}
+
+.btn.primary{
+  background: rgba(255, 105, 180, 0.22);
+  border-color: rgba(255, 105, 180, 0.35);
+}
+.btn.secondary{
+  background: rgba(255,255,255,0.12);
+}
+
+.btn:active{ transform: scale(0.99); }
+
+.small{
+  margin: 10px 0 0 0;
+  color: rgba(255,255,255,0.72);
+  font-size: 0.92rem;
+}
+
+/* Cadeau */
+.giftWrap{
+  display:grid;
+  place-items:center;
+  gap: 14px;
+}
+.giftText{
+  margin:0;
+  color: rgba(255,255,255,0.85);
+}
+
+.giftBox{
+  position: relative;
+  width: 140px;
+  height: 120px;
+  transform: translateY(10px);
+}
+.giftBody{
+  position:absolute;
+  inset: 18px 0 0 0;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: var(--shadow);
+}
+.giftLid{
+  position:absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 36px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.22);
+  border: 1px solid rgba(255,255,255,0.20);
+  transform-origin: left center;
+}
+.giftRibbon{
+  position:absolute;
+  left: 50%;
+  top: 18px;
+  width: 16px;
+  height: 92px;
+  transform: translateX(-50%);
+  border-radius: 10px;
+  background: rgba(255, 105, 180, 0.55);
+  filter: blur(0px);
+}
+
+@keyframes openLid {
+  0% { transform: rotate(0deg) translateY(0px); }
+  100% { transform: rotate(-35deg) translateY(-6px); }
+}
+
+.footer{
+  text-align:center;
+  padding: 8px 0 2px 0;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.85rem;
+}
+
+/* Burst bouquet */
+.burst{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.petal{
+  position:absolute;
+  font-size: 26px;
+  opacity: 0;
+  transform: translate(-50%,-50%);
+}
+
+@keyframes burstFly {
+  0%   { opacity:0; transform: translate(-50%,-50%) scale(0.8); }
+  10%  { opacity:1; }
+  100% { opacity:0; transform: translate(var(--dx), var(--dy)) scale(1.2) rotate(var(--rot)); }
+}
