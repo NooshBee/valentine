@@ -1,40 +1,16 @@
 // ======================
 // CONFIG
 // ======================
-
-// ✅ Bougainvillier officiel
-const BOUGAIN = {
-  id: "bougain",
-  img: "assets/flowers/icons8-bougainvillea-58.png",
-  label: "bougainvillier",
-  message:
-    "C'est un bougainvillier. Je te l’offre comme symbole de notre joie, de notre énergie… et de tout ce que je veux construire avec toi."
-};
-
 const TARGET_ID = "bougain";
 const MESSAGE_SECONDS = 15;
 
-// ✅ Rareté : plus le nombre est grand, plus il est rare
-// Exemple: 6 => ~1 bougain pour 6 fleurs en moyenne
+// plus grand = plus rare (ex: 7 => ~1 bougain pour 7 spawns)
 const BOUGAIN_RARITY = 7;
 
-// 🔁 Mets ici TOUS les noms de tes autres fichiers PNG (ceux que tu m’as envoyés)
-// Exemple : "fleur-01.png", "fleur-02.png", ...
-const OTHER_FLOWER_FILES = [
-  // TODO: remplace par tes vrais noms de fichiers :
-  // "fleur-01.png",
-  // "fleur-02.png",
-];
+// --- FLOWERS ---
+// ✅ colle ici ton tableau FLOWERS (celui que je t’ai donné au-dessus)
+ // (NE RIEN METTRE ICI, tu colles le tableau FLOWERS ici à la place de ce commentaire)
 
-const OTHER_FLOWERS = OTHER_FLOWER_FILES.map((file, idx) => ({
-  id: `f${idx + 1}`,
-  img: `assets/flowers/${file}`,
-  label: "une fleur",
-  message:
-    "C'est une jolie fleur… mais ce n'est pas un bougainvillier."
-}));
-
-const FLOWERS = [...OTHER_FLOWERS, BOUGAIN];
 
 // ======================
 // STATE
@@ -54,58 +30,56 @@ const btnYesWith = document.getElementById("btnYesWith");
 const btnYesWithout = document.getElementById("btnYesWithout");
 
 const loveTimerEl = document.getElementById("loveTimer");
+let proposalStart = null;
+let proposalInterval = null;
 
 const giftBtn = document.getElementById("giftBtn");
+let openProgress = 0;
+let giftOpened = false;
 
 let overlayTimer = null;
 let countdownTimer = null;
 let isLocked = false;
 
-let proposalStart = null;
-let proposalInterval = null;
-
-let openProgress = 0;
-let giftOpened = false;
-
 // ======================
 // HELPERS
 // ======================
-function rand(min, max) { return Math.random() * (max - min) + min; }
+function rand(min, max){ return Math.random() * (max - min) + min; }
 
-function clearTimers() {
+function clearTimers(){
   if (overlayTimer) clearTimeout(overlayTimer);
   if (countdownTimer) clearInterval(countdownTimer);
   overlayTimer = null;
   countdownTimer = null;
 }
 
-function hideAllScreens() {
+function hideAllScreens(){
   overlay.classList.add("hidden");
   proposal.classList.add("hidden");
   gift.classList.add("hidden");
   burst.classList.add("hidden");
 }
 
-function resetToHome() {
+function resetToHome(){
   clearTimers();
   stopProposalTimer();
   hideAllScreens();
   isLocked = false;
 }
 
-function formatTime(sec) {
-  if (sec < 60) return `${sec} seconde${sec > 1 ? "s" : ""}`;
-  const m = Math.floor(sec / 60);
+function formatTime(sec){
+  if (sec < 60) return `${sec} seconde${sec>1?"s":""}`;
+  const m = Math.floor(sec/60);
   const s = sec % 60;
-  return `${m} minute${m > 1 ? "s" : ""} ${s} seconde${s > 1 ? "s" : ""}`;
+  return `${m} minute${m>1?"s":""} ${s} seconde${s>1?"s":""}`;
 }
 
-function startProposalTimer() {
+function startProposalTimer(){
   proposalStart = Date.now();
   stopProposalTimer();
 
   const tick = () => {
-    const sec = Math.floor((Date.now() - proposalStart) / 1000);
+    const sec = Math.floor((Date.now() - proposalStart)/1000);
     loveTimerEl.textContent = `${formatTime(sec)} avant d’accepter mon amour ?`;
   };
 
@@ -113,31 +87,33 @@ function startProposalTimer() {
   proposalInterval = setInterval(tick, 1000);
 }
 
-function stopProposalTimer() {
+function stopProposalTimer(){
   if (proposalInterval) clearInterval(proposalInterval);
   proposalInterval = null;
 }
 
 // ======================
-// FLOWERS GENERATION
+// FLOWERS GENERATION (rarity + drift everywhere)
 // ======================
-function pickFlowerForSpawn() {
-  // ✅ Bougain rare
-  const roll = Math.floor(rand(1, BOUGAIN_RARITY + 1)); // 1..RARITY
-  if (roll === 1) return BOUGAIN;
+const BOUGAIN = FLOWERS.find(f => f.id === TARGET_ID);
 
-  // Sinon une fleur normale
-  if (OTHER_FLOWERS.length === 0) return BOUGAIN; // fallback
-  return OTHER_FLOWERS[Math.floor(Math.random() * OTHER_FLOWERS.length)];
+function pickFlowerForSpawn(){
+  // bougain rare
+  const roll = Math.floor(rand(1, BOUGAIN_RARITY + 1)); // 1..rarity
+  if (roll === 1 && BOUGAIN) return BOUGAIN;
+
+  // autres fleurs
+  const others = FLOWERS.filter(f => f.id !== TARGET_ID);
+  return others[Math.floor(Math.random() * others.length)];
 }
 
-function spawnFloatingFlower(flower) {
+function spawnFloatingFlower(flower){
   const el = document.createElement("button");
   el.className = "flower";
   el.type = "button";
   el.setAttribute("aria-label", flower.label);
 
-  // ✅ Image PNG à la place de l’emoji
+  // image
   const img = document.createElement("img");
   img.src = flower.img;
   img.alt = flower.label;
@@ -145,23 +121,20 @@ function spawnFloatingFlower(flower) {
   img.className = "flowerImg";
   el.appendChild(img);
 
-  // ✅ Glow discret sur le bougainvillier
+  // glow sur bougainvillier
   if (flower.id === TARGET_ID) el.classList.add("bougainGlow");
 
-  // Position de départ n'importe où
-  const x = rand(8, 92);
-  const y = rand(10, 92);
-  el.style.left = `${x}%`;
-  el.style.top = `${y}%`;
+  // position départ
+  el.style.left = `${rand(8, 92)}%`;
+  el.style.top  = `${rand(10, 92)}%`;
 
-  // Trajectoires aléatoires
+  // trajectoires
   el.style.setProperty("--dx1", `${rand(-20, 20)}vw`);
   el.style.setProperty("--dy1", `${rand(-25, 25)}vh`);
   el.style.setProperty("--dx2", `${rand(-30, 30)}vw`);
   el.style.setProperty("--dy2", `${rand(-35, 35)}vh`);
 
-  // ✅ durée en secondes (pas en ms)
-  const duration = rand(7, 13);
+  const duration = rand(7, 13); // secondes
   const delay = rand(0, 1.2);
   el.style.animation = `drift ${duration}s ease-in-out ${delay}s infinite alternate`;
 
@@ -169,10 +142,10 @@ function spawnFloatingFlower(flower) {
   field.appendChild(el);
 }
 
-function buildField() {
+function buildField(){
   field.innerHTML = "";
   const copies = 14;
-  for (let i = 0; i < copies; i++) {
+  for (let i=0; i<copies; i++){
     spawnFloatingFlower(pickFlowerForSpawn());
   }
 }
@@ -180,11 +153,11 @@ function buildField() {
 // ======================
 // INTERACTIONS
 // ======================
-function showOverlay(flower, onDone) {
+function showOverlay(flower, onDone){
   isLocked = true;
   hideAllScreens();
 
-  // ✅ Mettre l’image dans l’overlay
+  // image dans l’overlay
   overlayFlower.innerHTML = "";
   const big = document.createElement("img");
   big.src = flower.img;
@@ -216,12 +189,12 @@ function showOverlay(flower, onDone) {
   }, MESSAGE_SECONDS * 1000);
 }
 
-function onFlowerClick(flower) {
+function onFlowerClick(flower){
   if (isLocked) return;
 
   const isTarget = (flower.id === TARGET_ID);
 
-  if (!isTarget) {
+  if (!isTarget){
     showOverlay(flower, () => {
       resetToHome();
       buildField();
@@ -229,7 +202,7 @@ function onFlowerClick(flower) {
     return;
   }
 
-  // Bougain : overlay puis demande
+  // bougain
   showOverlay(flower, () => {
     proposal.classList.remove("hidden");
     startProposalTimer();
@@ -237,20 +210,23 @@ function onFlowerClick(flower) {
   });
 }
 
-function playGiftSequence(includeBougain) {
+// ======================
+// GIFT SEQUENCE
+// ======================
+function playGiftSequence(includeBougain){
   isLocked = true;
   hideAllScreens();
+  stopProposalTimer();
 
-  // Attendre 5 secondes
+  // attente 5s après choix
   setTimeout(() => {
     gift.classList.remove("hidden");
     setupTapToOpenGift(includeBougain);
-    isLocked = false; // on laisse tap sur le cadeau
+    isLocked = false;
   }, 5000);
 }
 
-// ✅ ouverture progressive au tap
-function setupTapToOpenGift(includeBougain) {
+function setupTapToOpenGift(includeBougain){
   openProgress = 0;
   giftOpened = false;
 
@@ -258,21 +234,20 @@ function setupTapToOpenGift(includeBougain) {
   giftBtn.style.setProperty("--lid-up", "0px");
   giftBtn.style.animation = "none";
 
-  const onTap = () => {
+  // on évite d’empiler les listeners
+  const newBtn = giftBtn.cloneNode(true);
+  giftBtn.parentNode.replaceChild(newBtn, giftBtn);
+
+  newBtn.addEventListener("click", () => {
     if (giftOpened) return;
 
-    openProgress = Math.min(1, openProgress + 0.18); // ~6 taps
-    const rot = -35 * openProgress;
-    const up = -8 * openProgress;
+    openProgress = Math.min(1, openProgress + 0.18);
+    newBtn.style.setProperty("--lid-rot", `${-35 * openProgress}deg`);
+    newBtn.style.setProperty("--lid-up", `${-8 * openProgress}px`);
 
-    giftBtn.style.setProperty("--lid-rot", `${rot}deg`);
-    giftBtn.style.setProperty("--lid-up", `${up}px`);
-
-    if (openProgress >= 1) {
+    if (openProgress >= 1){
       giftOpened = true;
-      giftBtn.removeEventListener("click", onTap);
-
-      giftBtn.style.animation = "inflate 900ms ease-in-out forwards";
+      newBtn.style.animation = "inflate 900ms ease-in-out forwards";
 
       setTimeout(() => {
         gift.classList.add("hidden");
@@ -285,41 +260,27 @@ function setupTapToOpenGift(includeBougain) {
         }, 2800);
       }, 950);
     }
-  };
-
-  // ⚠️ évite d’empiler plusieurs listeners
-  giftBtn.replaceWith(giftBtn.cloneNode(true));
-  // On récupère le nouveau bouton cloné
-  const newBtn = document.getElementById("giftBtn");
-  // réassocier styles
-  newBtn.style.setProperty("--lid-rot", "0deg");
-  newBtn.style.setProperty("--lid-up", "0px");
-  newBtn.style.animation = "none";
-  // remettre la référence globale
-  window.giftBtn = newBtn;
-  window.giftBtn.addEventListener("click", onTap);
+  });
 }
 
 // ======================
 // EXPLOSION
 // ======================
-function launchBurst(includeBougain) {
+function launchBurst(includeBougain){
   burst.innerHTML = "";
 
-  // Ici tu peux mettre aussi des mini PNG plus tard si tu veux.
-  const base = ["💖", "✨", "💐"];
+  const base = ["💖","✨","💐"];
   if (includeBougain) base.push("🌸");
+
   const petalsCount = 40;
 
-  for (let i = 0; i < petalsCount; i++) {
+  for (let i=0; i<petalsCount; i++){
     const p = document.createElement("div");
     p.className = "petal";
     p.textContent = base[Math.floor(Math.random() * base.length)];
 
-    const startX = 50 + rand(-6, 6);
-    const startY = 55 + rand(-6, 6);
-    p.style.left = `${startX}%`;
-    p.style.top = `${startY}%`;
+    p.style.left = `${50 + rand(-6, 6)}%`;
+    p.style.top  = `${55 + rand(-6, 6)}%`;
 
     p.style.setProperty("--dx", `${rand(-45, 45)}vw`);
     p.style.setProperty("--dy", `${rand(-55, 35)}vh`);
@@ -336,15 +297,8 @@ function launchBurst(includeBougain) {
 // ======================
 // BUTTONS
 // ======================
-btnYesWith.addEventListener("click", () => {
-  stopProposalTimer();
-  playGiftSequence(true);
-});
-
-btnYesWithout.addEventListener("click", () => {
-  stopProposalTimer();
-  playGiftSequence(false);
-});
+btnYesWith.addEventListener("click", () => playGiftSequence(true));
+btnYesWithout.addEventListener("click", () => playGiftSequence(false));
 
 // ======================
 // INIT
