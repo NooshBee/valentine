@@ -197,6 +197,53 @@ function playGiftSequence(includeBougain, elapsedSeconds){
   void lid.offsetWidth; // reset reflow
   lid.style.animation = "openLid 700ms ease forwards";
 
+// ouverture progressive au tapin //
+const giftBtn = document.getElementById("giftBtn");
+let openProgress = 0;
+let giftOpened = false;
+
+function setupTapToOpenGift(includeBougain){
+  openProgress = 0;
+  giftOpened = false;
+
+  // reset
+  giftBtn.style.setProperty("--lid-rot", "0deg");
+  giftBtn.style.setProperty("--lid-up", "0px");
+  giftBtn.style.animation = "none";
+
+  const onTap = () => {
+    if (giftOpened) return;
+
+    openProgress = Math.min(1, openProgress + 0.18); // ~6 taps
+    const rot = -35 * openProgress;  // 0 -> -35deg
+    const up  = -8  * openProgress;  // 0 -> -8px
+    giftBtn.style.setProperty("--lid-rot", `${rot}deg`);
+    giftBtn.style.setProperty("--lid-up", `${up}px`);
+
+    if (openProgress >= 1){
+      giftOpened = true;
+      giftBtn.removeEventListener("click", onTap);
+
+      // gonfle un peu puis explose
+      giftBtn.style.animation = "inflate 800ms ease-in-out forwards";
+
+      setTimeout(() => {
+        gift.classList.add("hidden");
+        burst.classList.remove("hidden");
+        launchBurst(includeBougain);
+
+        setTimeout(() => {
+          resetToHome();
+          buildField();
+        }, 2600);
+      }, 900);
+    }
+  };
+
+  giftBtn.addEventListener("click", onTap);
+}
+
+
   // explosion bouquet
   setTimeout(() => {
     gift.classList.add("hidden");
