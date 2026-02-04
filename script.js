@@ -209,7 +209,9 @@ function createFlowerElement(flower){
 }
 
 function renderOne(s){
-  s.el.style.transform = `translate3d(${s.x}px, ${s.y}px, 0) translate(-50%, -50%)`;
+  s.el.style.setProperty("--x", `${s.x}px`);
+  s.el.style.setProperty("--y", `${s.y}px`);
+  s.el.style.transform = `translate3d(var(--x), var(--y), 0) translate(-50%, -50%)`;
 }
 
 // ======================
@@ -420,6 +422,12 @@ function onFlowerClick(flower){
   });
 }
 
+function setHeartBeat(on){
+  for (const s of flowersState){
+    s.el.classList.toggle("heartBeat", on);
+  }
+}
+
 // ======================
 // GIFT SEQUENCE
 // ======================
@@ -531,8 +539,15 @@ function launchBurst(includeBougain){
 // ======================
 // BUTTONS
 // ======================
-btnYesWith.addEventListener("click", () => playGiftSequence(true));
-btnYesWithout.addEventListener("click", () => playGiftSequence(false));
+btnYesWith.addEventListener("click", () => {
+  setHeartBeat(true);
+  playGiftSequence(true);
+});
+
+btnYesWithout.addEventListener("click", () => {
+  setHeartBeat(true);
+  playGiftSequence(false);
+});
 
 window.addEventListener("resize", () => buildField());
 
