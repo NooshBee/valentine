@@ -315,10 +315,7 @@ function showOverlay(flower, onDone){
     // petite vibration (si supportée)
     try{
       if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
-    } catch(e){}
-  
-    // mini confettis (dans l'overlay, au-dessus de la carte)
-    launchConfetti(overlay, 14);
+    }
   }
 
   const close = () => {
@@ -445,31 +442,6 @@ btnYesWith.addEventListener("click", () => playGiftSequence(true));
 btnYesWithout.addEventListener("click", () => playGiftSequence(false));
 
 window.addEventListener("resize", () => buildField());
-
-function launchConfetti(container, count){
-  // on nettoie les anciens (si jamais)
-  container.querySelectorAll(".confetti").forEach(n => n.remove());
-
-  const icons = ["💖","✨","💐","😍","🌸"];
-  const w = window.innerWidth;
-
-  for (let i=0; i<count; i++){
-    const el = document.createElement("div");
-    el.className = "confetti";
-    el.textContent = icons[Math.floor(Math.random()*icons.length)];
-
-    const x = Math.floor(Math.random() * (Math.min(520, w) - 20)) + 10; // zone centrée
-    const rot = `${Math.floor(Math.random()*240 - 120)}deg`;
-
-    el.style.setProperty("--x", `calc(50% - 260px + ${x}px)`);
-    el.style.setProperty("--rot", rot);
-
-    container.appendChild(el);
-
-    // suppression après animation
-    setTimeout(() => el.remove(), 1300);
-  }
-}
 
 // ======================
 // INIT
