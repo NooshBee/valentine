@@ -441,7 +441,6 @@ function launchBurst(includeBougain){
     burst.appendChild(p);
   }
 }
-
 // ======================
 // BUTTONS
 // ======================
