@@ -321,3 +321,36 @@ h1{
   height: 56px;
   object-fit: contain;
 }
+
+/* ===== Titre d'accueil ===== */
+.title-text{
+  font-size: 1.9rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* Emoji sous le titre */
+.title-emoji{
+  font-size: 3.2rem;
+  line-height: 1;
+  margin: 0;
+
+  /* petite animation douce */
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+/* Animation respiration */
+@keyframes breathe{
+  0%,100%{ transform: scale(1); }
+  50%{ transform: scale(1.08); }
+}
+
+/* Ajustement spécial iPhone */
+@media (max-width: 480px){
+  .title-text{
+    font-size: 1.8rem;
+  }
+  .title-emoji{
+    font-size: 3.4rem;
+  }
+}
