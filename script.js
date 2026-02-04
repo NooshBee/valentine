@@ -334,12 +334,16 @@ function onFlowerClick(flower){
   }
 
   showOverlay(flower, () => {
-    hideAllScreens();
-    if (topHeader) topHeader.classList.add("hideTop");
+  hideAllScreens();
+  if (topHeader) topHeader.classList.add("hideTop");
+
+  // délai 2 secondes avant la demande
+  setTimeout(() => {
     proposal.classList.remove("hidden");
     startProposalTimer();
     isLocked = false;
-  });
+  }, 2000);
+});
 }
 
 // ======================
@@ -355,7 +359,7 @@ function playGiftSequence(includeBougain){
     gift.classList.remove("hidden");
     setupTapToOpenGift(includeBougain);
     isLocked = false;
-  }, 5000);
+  }, 2000);
 }
 
 function setupTapToOpenGift(includeBougain){
