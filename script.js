@@ -388,7 +388,7 @@ function setupTapToOpenGift(includeBougain){
 
   // gonflage progressif EN MÊME TEMPS que l'ouverture
   const scale = 1 + (openProgress * 0.22); // 1.00 -> 1.14
-  newBtn.style.transform = `scale(${scale})`;
+  newBtn.style.setProperty("--box-scale", scale);
 
   // dernier tap = auto gonflage + explosion
   if (openProgress >= 1){
