@@ -8,7 +8,7 @@ const MIN_PER_VARIETY = 3; // 3 de chaque variété => 54
 const FLOW_SIZE = 54;      // taille des bulles (doit matcher ton CSS .flower width/height)
 const RADIUS = FLOW_SIZE / 2;
 
-const BOUNCE_SPEED_MIN = 18; // px/s (lent)
+const BOUNCE_SPEED_MIN = 26; // px/s (lent)
 const BOUNCE_SPEED_MAX = 42; // px/s (plus vivant)
 
 // --- FLOWERS ---
