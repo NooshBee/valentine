@@ -331,7 +331,7 @@ function showOverlay(flower, onDone){
 
   // Indication utilisateur
   const hint = overlay.querySelector(".hint");
-  if (hint) hint.innerHTML = "👆 Touche la carte pour continuer";
+  if (hint) hint.innerHTML = "👆🏾 Touche la carte pour réessayer 👆🏾 ";
 
   const close = () => {
     overlay.classList.add("hidden");
