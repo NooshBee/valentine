@@ -115,7 +115,7 @@ function startProposalTimer(){
 
   const tick = () => {
     const sec = Math.floor((Date.now() - proposalStart)/1000);
-    loveTimerEl.textContent = `${formatTime(sec)} avant d’accepter mon amour ?`;
+    loveTimerEl.textContent = `${formatTime(sec)} avant d’accepter mon amour ? Really ?`;
   };
   tick();
   proposalInterval = setInterval(tick, 1000);
