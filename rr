@@ -1,44 +1,74 @@
+ok
+
+.giftBox{
+  transform: scale(var(--box-scale, 1));
+}
+
+
 @keyframes autoInflate {
-  0%   { transform: scale(1); }
+  0%   { transform: scale(var(--box-scale, 1)); }
   70%  { transform: scale(1.25); }
   100% { transform: scale(1.45); }
 }
 
 
-newBtn.addEventListener("click", () => {
-  if (giftOpened) return;
+// 4 taps = 0.25
+openProgress = Math.min(1, openProgress + 0.25);
 
-  // 6 taps environ (0.18 * 6 = 1.08)
-  openProgress = Math.min(1, openProgress + 0.18);
+// ouverture du couvercle
+newBtn.style.setProperty("--lid-rot", `${-35 * openProgress}deg`);
+newBtn.style.setProperty("--lid-up", `${-8 * openProgress}px`);
 
-  // ouverture du couvercle
-  newBtn.style.setProperty("--lid-rot", `${-35 * openProgress}deg`);
-  newBtn.style.setProperty("--lid-up", `${-8 * openProgress}px`);
+// gonflage progressif via variable CSS
+const scale = 1 + (openProgress * 0.14); // ajuste si besoin
+newBtn.style.setProperty("--box-scale", scale);
 
-  // gonflage progressif EN MÊME TEMPS que l'ouverture
-  const scale = 1 + (openProgress * 0.14); // 1.00 -> 1.14
-  newBtn.style.transform = `scale(${scale})`;
+// dernier tap
+if (openProgress >= 1){
+  giftOpened = true;
 
-  // dernier tap = auto gonflage + explosion
-  if (openProgress >= 1){
-    giftOpened = true;
+  // lance l'auto gonflage CONTINU
+  newBtn.style.animation = "autoInflate 1100ms ease-in forwards";
 
-    // auto gonflage (sans avoir besoin de retaper)
-    newBtn.style.animation = "autoInflate 1100ms ease-in forwards";
+  setTimeout(() => {
+    gift.classList.add("hidden");
+    burst.classList.remove("hidden");
+    launchBurst(includeBougain);
 
     setTimeout(() => {
-      gift.classList.add("hidden");
-      burst.classList.remove("hidden");
-      launchBurst(includeBougain);
-
-      setTimeout(() => {
-        resetToHome();
-        buildField();
-      }, 2800);
-    }, 1150);
-  }
-});
+      resetToHome();
+      buildField();
+    }, 2800);
+  }, 1150);
+}
 
 
 
+.giftBox{
+  position: relative;
+  width: 170px;
+  height: 140px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  /* ✅ scale piloté par JS via variable CSS */
+  transform: scale(var(--box-scale, 1));
+  transform-origin: center;
+}
+
+
+
+
+@keyframes autoInflate {
+  0%   { transform: scale(var(--box-scale, 1)); } /* ✅ part de la taille actuelle */
+  70%  { transform: scale(1.25); }
+  100% { transform: scale(1.45); }
+}
+
+
+
+const scale = 1 + (openProgress * 0.14); // 1.00 -> 1.14
+newBtn.style.setProperty("--box-scale", scale);
 
