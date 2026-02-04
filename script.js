@@ -286,37 +286,42 @@ function lockFlowersClicks(lock){
 // ======================
 // BOUQUET ANIM (Option A)
 // ======================
-function gatherFlowersToBouquet(durationMs = 1200){
+function gatherFlowersToHeart(durationMs = 1200){
   return new Promise((resolve) => {
-    // stop rebonds
-    stopAnimation();
 
-    // évite que des cartes s’ouvrent pendant l’anim
+    stopAnimation();
     isLocked = true;
     lockFlowersClicks(true);
 
     const w = window.innerWidth;
     const h = window.innerHeight;
 
-    // centre “bouquet”
     const cx = w * 0.5;
     const cy = h * 0.48;
 
     const total = flowersState.length;
+    const scale = Math.min(w, h) * 0.018; // taille du cœur
 
     for (let i = 0; i < total; i++){
       const s = flowersState[i];
 
-      const t = i / Math.max(1, (total - 1));
-      const angle = t * Math.PI * 2;
+      const t = (i / total) * Math.PI * 2;
 
-      const rx = 70;
-      const ry = 95;
+      const x =
+        16 * Math.pow(Math.sin(t), 3);
 
-      const tx = cx + Math.cos(angle) * rx + rand(-14, 14);
-      const ty = cy + Math.sin(angle) * ry + rand(-14, 14);
+      const y =
+        13 * Math.cos(t)
+        - 5 * Math.cos(2 * t)
+        - 2 * Math.cos(3 * t)
+        - Math.cos(4 * t);
 
-      s.el.style.transition = `transform ${durationMs}ms cubic-bezier(.2,.9,.2,1)`;
+      const tx = cx + x * scale;
+      const ty = cy - y * scale;
+
+      s.el.style.transition =
+        `transform ${durationMs}ms cubic-bezier(.2,.9,.2,1)`;
+
       s.x = tx;
       s.y = ty;
       renderOne(s);
@@ -327,13 +332,13 @@ function gatherFlowersToBouquet(durationMs = 1200){
         s.el.style.transition = "";
       }
       resolve();
-    }, durationMs + 30);
+    }, durationMs + 40);
   });
 }
 
 // ✅ CHAÎNE FIXE : overlay -> fermeture -> bouquet -> (2s) -> demande
 async function bouquetThenProposal(){
-  await gatherFlowersToBouquet(1200);
+  await gatherFlowersToHeart(1200);
 
   setTimeout(() => {
     proposal.classList.remove("hidden");
