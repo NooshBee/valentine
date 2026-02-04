@@ -8,29 +8,29 @@ const MIN_PER_VARIETY = 3; // 3 de chaque variété => 54
 const FLOW_SIZE = 54;      // taille des bulles (doit matcher ton CSS .flower width/height)
 const RADIUS = FLOW_SIZE / 2;
 
-const BOUNCE_SPEED_MIN = 26; // px/s (lent)
+const BOUNCE_SPEED_MIN = 18; // px/s (lent)
 const BOUNCE_SPEED_MAX = 42; // px/s (plus vivant)
 
 // --- FLOWERS ---
 const FLOWERS = [
   { id: "f1", img: "https://github.com/user-attachments/assets/c3365114-7047-4c05-ae8c-2a6fc07f2c17", label: "Bégonia", message: "Symbole de la prudence et de la protection… mais ce n’est pas un bougainvillier." },
-  { id: "bougain", img: "https://github.com/user-attachments/assets/8fb5b985-b8b4-4a9a-ae6f-2515ceb81f5f", label: "Un Bougainvillier", isBougain: true, message: "Ta fleur préféré :) Je te l’offre comme symbole de l'abondance et de la joie que je ressens lorsque je suis avec toi." },
-  { id: "f3", img: "https://github.com/user-attachments/assets/ad8ed4b0-6b57-4107-8944-1f20969afaa0", label: "Broméliacée", message: "Celle-ci, c’est la résilience, l'unité... mais ce n’est pas un bougainvillier." },
+  { id: "bougain", img: "https://github.com/user-attachments/assets/8fb5b985-b8b4-4a9a-ae6f-2515ceb81f5f", label: "Bougainvillier", isBougain: true, message: "Ta fleur préféré haha Je te l’offre comme symbole de l'abondance et de la joie que je ressens lorsque je suis avec toi." },
+  { id: "f3", img: "https://github.com/user-attachments/assets/ad8ed4b0-6b57-4107-8944-1f20969afaa0", label: "Broméliacée", message: "Celle-ci représente la résilience, l'unité... mais ce n’est pas un bougainvillier." },
   { id: "f4", img: "https://github.com/user-attachments/assets/44ec2ab6-626a-458b-aeaf-6ad533073a35", label: "Hibiscus", message: "Pour ta féminité, ta douceur... mais ce n’est pas un bougainvillier." },
   { id: "f5", img: "https://github.com/user-attachments/assets/e3501e12-5593-49d2-b2e9-74ff90614195", label: "Hibiscus", message: "Une autre hibiscus, symbole de ta beauté... mais ce n’est pas un bougainvillier." },
   { id: "f6", img: "https://github.com/user-attachments/assets/35883ac8-2875-4750-8530-5cef93520c69", label: "Hoya", message: "Symbole de l'attachement que j'ai pour toi... mais ce n’est pas un bougainvillier." },
   { id: "f7", img: "https://github.com/user-attachments/assets/26929324-4854-46b5-a605-3602f1e14e5f", label: "Hortensia", message: "Une fleur qui exprime ma gratitude et la reconnaissance que j'ai envers toi... mais ce n’est pas un bougainvillier." },
   { id: "f8", img: "https://github.com/user-attachments/assets/a94dff84-db3f-48d9-a9a8-427442028893", label: "Jasmin", message: "Parce que ton amour m'apaise... il est doux... mais ce n’est pas un bougainvillier." },
-  { id: "f9", img: "https://github.com/user-attachments/assets/700c902d-0b1c-4db9-9ae9-03fcb27e42bf", label: "Jasmin", message: "Une autre fleur de jasmin... mais ce n’est pas un bougainvillier." },
+  { id: "f9", img: "https://github.com/user-attachments/assets/700c902d-0b1c-4db9-9ae9-03fcb27e42bf", label: "Jasmin", message: "Une autre fleur de jasmin, pour la patience que tu m'accordes... mais ce n’est pas un bougainvillier." },
   { id: "f10", img: "https://github.com/user-attachments/assets/e2a37172-6e1e-48cb-899c-f8fae75f9f5e", label: "Lantana", message: "Parce que cette relation nous apporte énormément de changements... et aussi de belles surprises... mais ce n’est pas un bougainvillier." },
   { id: "f11", img: "https://github.com/user-attachments/assets/77017518-486b-4662-87eb-12859cf70208", label: "Lys", message: "Lily pour les intimes... pour l'équilibre qu'on se crée toutes les trois... mais ce n’est pas un bougainvillier." },
-  { id: "f12", img: "https://github.com/user-attachments/assets/a906a7eb-04f3-4b99-9d12-20ed16240c75", label: "Orchidée", message: "Une petite fleur luxueuse et rafinée... mais ce n’est pas un bougainvillier." },
-  { id: "f13", img: "https://github.com/user-attachments/assets/e4e3503c-b7bd-4486-88e9-a4da224a5c18", label: "Poinsettia", message: "Pour la renaissance, la transformation... mais ce n’est pas un bougainvillier." },
-  { id: "f14", img: "https://github.com/user-attachments/assets/82e25fe3-6541-441b-a9b3-b10bead438c7", label: "Rose", message: "Elle me fait penser à tes yeux quand tu es concentrée… et je fonds. Mais ce n’est pas un bougainvillier." },
-  { id: "f15", img: "https://github.com/user-attachments/assets/f82fd824-6847-49ee-b7f8-e6cea4f5a7af", label: "Sisyrinchium", message: "Cette fleur, c’est l’affection tranquille. Celle qui dure. Mais ce n’est pas un bougainvillier." },
-  { id: "f16", img: "https://github.com/user-attachments/assets/d192016c-4938-41c3-872b-3a322ae6a36b", label: "Arugula", message: "Jolie, délicate… et pourtant forte. Ça te décrit parfaitement. Mais ce n’est pas un bougainvillier." },
-  { id: "f17", img: "https://github.com/user-attachments/assets/66bafcaa-49d8-47cd-b2ba-484869d76c6a", label: "Amaryllis", message: "Une fleur qui donne envie de dire merci… merci d’être toi. Mais ce n’est pas un bougainvillier." },
-  { id: "f18", img: "https://github.com/user-attachments/assets/0521e833-0503-407f-95a8-afea74a7d9c0", label: "Anthurium", message: "Encore une belle fleur… mais la bonne fleur, c’est celle qui me mène à toi. Pas un bougainvillier." }
+  { id: "f12", img: "https://github.com/user-attachments/assets/a906a7eb-04f3-4b99-9d12-20ed16240c75", label: "Orchidée", message: "Une petite fleur luxueuse et rafinée, comme toi... mais ce n’est pas un bougainvillier." },
+  { id: "f13", img: "https://github.com/user-attachments/assets/e4e3503c-b7bd-4486-88e9-a4da224a5c18", label: "Poinsettia", message: "Représentation de la renaissance, la transformation... mais ce n’est pas un bougainvillier." },
+  { id: "f14", img: "https://github.com/user-attachments/assets/82e25fe3-6541-441b-a9b3-b10bead438c7", label: "Rose", message: "La fleur de l'amour universel, l'amour pur...mais ce n’est pas un bougainvillier." },
+  { id: "f15", img: "https://github.com/user-attachments/assets/f82fd824-6847-49ee-b7f8-e6cea4f5a7af", label: "Sisyrinchium", message: "Cette fleur, c’est la confiance, la tranquilité, la simplicité... mais ce n’est pas un bougainvillier." },
+  { id: "f16", img: "https://github.com/user-attachments/assets/d192016c-4938-41c3-872b-3a322ae6a36b", label: "Arugula", message: "Définition de l'attirance physique que j'ai pour toi...l'amour du corps lorsque les mots sont muets...mais ce n’est pas un bougainvillier." },
+  { id: "f17", img: "https://github.com/user-attachments/assets/66bafcaa-49d8-47cd-b2ba-484869d76c6a", label: "Amaryllis", message: "La fierté que je ressens lorsque mes yeux se posent sur toi ...mais ce n’est pas un bougainvillier." },
+  { id: "f18", img: "https://github.com/user-attachments/assets/0521e833-0503-407f-95a8-afea74a7d9c0", label: "Anthurium", message: "Pour te remercier de m'avoir acceuilli...dans ton environnement... physique et spirituel...mais ce n'est pas un bougainvillier." }
 ];
 
 // ======================
