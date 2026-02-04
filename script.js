@@ -2,7 +2,7 @@
 // CONFIG
 // ======================
 const TARGET_ID = "bougain";
-const MESSAGE_SECONDS = 10;
+const MESSAGE_SECONDS = 15;
 
 // 3 fleurs par variété => 18 * 3 = 54
 const MIN_PER_VARIETY = 3;
@@ -125,7 +125,7 @@ const FLOWERS = [
 ];
 
 // ======================
-// STATE
+// DOM
 // ======================
 const field = document.getElementById("field");
 const overlay = document.getElementById("overlay");
@@ -144,6 +144,10 @@ const btnYesWith = document.getElementById("btnYesWith");
 const btnYesWithout = document.getElementById("btnYesWithout");
 
 const loveTimerEl = document.getElementById("loveTimer");
+
+// ======================
+// STATE
+// ======================
 let proposalStart = null;
 let proposalInterval = null;
 
@@ -151,7 +155,6 @@ let overlayTimer = null;
 let countdownTimer = null;
 let isLocked = false;
 
-// cadeau multi-tap
 let openProgress = 0;
 let giftOpened = false;
 
@@ -217,20 +220,41 @@ function stopProposalTimer(){
   proposalInterval = null;
 }
 
+// ---- NO-GO ZONE from .topCard (automatic) ----
+function getNoGoRectPercent(){
+  const card = document.querySelector(".topCard");
+  if (!card) return null;
+
+  const r = card.getBoundingClientRect();
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  return {
+    xMin: (r.left / vw) * 100,
+    xMax: (r.right / vw) * 100,
+    yMin: (r.top / vh) * 100,
+    yMax: (r.bottom / vh) * 100,
+  };
+}
+
+function inRect(x, y, rect){
+  return x >= rect.xMin && x <= rect.xMax && y >= rect.yMin && y <= rect.yMax;
+}
+
 // ======================
-// FLOWERS GENERATION (54 fixes on grid)
+// FLOWERS (54 fixed grid, never under topCard)
 // ======================
 function buildField(){
   field.innerHTML = "";
 
-  // construire liste de 54 entrées (3x chaque fleur)
   const list = [];
   FLOWERS.forEach(f => {
     for (let i = 0; i < MIN_PER_VARIETY; i++) list.push(f);
   });
 
-  // répartir les variétés sur la page
   shuffleInPlace(list);
+
+  const noGo = getNoGoRectPercent();
 
   list.forEach((flower, idx) => {
     const col = idx % GRID_COLS;
@@ -245,7 +269,22 @@ function buildField(){
     const jitterX = rand(-cellW * 0.18, cellW * 0.18);
     const jitterY = rand(-cellH * 0.18, cellH * 0.18);
 
-    spawnFloatingFlower(flower, idx, baseX + jitterX, baseY + jitterY);
+    let x = baseX + jitterX;
+    let y = baseY + jitterY;
+
+    // Evite la carte : on retente un jitter plus large dans la même case
+    if (noGo){
+      let tries = 0;
+      while (inRect(x, y, noGo) && tries < 25){
+        const jitterX2 = rand(-cellW * 0.45, cellW * 0.45);
+        const jitterY2 = rand(-cellH * 0.45, cellH * 0.45);
+        x = baseX + jitterX2;
+        y = baseY + jitterY2;
+        tries++;
+      }
+    }
+
+    spawnFloatingFlower(flower, idx, x, y);
   });
 }
 
@@ -267,15 +306,14 @@ function spawnFloatingFlower(flower, slotIndex, xPercent, yPercent){
 
   if (flower.id === TARGET_ID) el.classList.add("bougainGlow");
 
-  // position stable
   el.style.left = `${xPercent}%`;
   el.style.top  = `${yPercent}%`;
 
-  // drift "safe" (évite de sortir de l’écran)
-  el.style.setProperty("--dx1", `${rand(-8, 8)}vw`);
-  el.style.setProperty("--dy1", `${rand(-10, 10)}vh`);
-  el.style.setProperty("--dx2", `${rand(-10, 10)}vw`);
-  el.style.setProperty("--dy2", `${rand(-12, 12)}vh`);
+  // drift réduit pour limiter les passages sous la carte
+  el.style.setProperty("--dx1", `${rand(-6, 6)}vw`);
+  el.style.setProperty("--dy1", `${rand(-6, 6)}vh`);
+  el.style.setProperty("--dx2", `${rand(-8, 8)}vw`);
+  el.style.setProperty("--dy2", `${rand(-8, 8)}vh`);
 
   const duration = rand(7, 12);
   const delay = rand(0, 1.2);
@@ -284,16 +322,14 @@ function spawnFloatingFlower(flower, slotIndex, xPercent, yPercent){
   el.addEventListener("click", () => {
     if (isLocked) return;
 
-    // enlever la fleur cliquée
+    // positions stables => respawn même variété même endroit
     const slot = Number(el.dataset.slot);
     const x = parseFloat(el.style.left);
     const y = parseFloat(el.style.top);
-    el.remove();
 
-    // respawn même variété, même slot/position => toujours 3 de chaque
+    el.remove();
     spawnFloatingFlower(flower, slot, x, y);
 
-    // logique overlay/proposal/cadeau
     onFlowerClick(flower);
   });
 
@@ -347,12 +383,11 @@ function onFlowerClick(flower){
   if (!isTarget){
     showOverlay(flower, () => {
       resetToHome();
-      // on ne rebuild pas : la grille reste, et le respawn a déjà remplacé la fleur
+      // on ne rebuild pas ici : les 54 fleurs restent, et la cliquée a déjà été remplacée
     });
     return;
   }
 
-  // bougain -> proposal
   showOverlay(flower, () => {
     hideAllScreens();
     hideTop();
@@ -371,7 +406,6 @@ function playGiftSequence(includeBougain){
   hideTop();
   stopProposalTimer();
 
-  // attente 5s après choix
   setTimeout(() => {
     hideAllScreens();
     hideTop();
@@ -390,7 +424,7 @@ function setupTapToOpenGift(includeBougain){
   oldBtn.style.setProperty("--lid-up", "0px");
   oldBtn.style.animation = "none";
 
-  // évite d’empiler les listeners
+  // évite empilement listeners
   const newBtn = oldBtn.cloneNode(true);
   oldBtn.parentNode.replaceChild(newBtn, oldBtn);
 
@@ -412,8 +446,7 @@ function setupTapToOpenGift(includeBougain){
 
         setTimeout(() => {
           resetToHome();
-          // IMPORTANT : on reconstruit la grille après cadeau (comme tu le voulais)
-          buildField();
+          buildField(); // recommence après le cadeau
         }, 2800);
       }, 950);
     }
@@ -456,6 +489,13 @@ function launchBurst(includeBougain){
 // ======================
 btnYesWith.addEventListener("click", () => playGiftSequence(true));
 btnYesWithout.addEventListener("click", () => playGiftSequence(false));
+
+// recalcul si changement d’écran (rotation iPhone, etc.)
+window.addEventListener("resize", () => {
+  // On rebuild pour re-prendre la taille réelle de la topCard
+  // (sinon la zone interdite peut être mauvaise)
+  buildField();
+});
 
 // ======================
 // INIT
