@@ -266,6 +266,7 @@ body{
   background: transparent;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transform: scale(var(--box-scale, 1));
 }
 
 .giftBody{
@@ -359,7 +360,7 @@ body{
 }
 
 @keyframes autoInflate {
-  0%   { transform: scale(1); }
+  0%   { transform: scale(var(--box-scale, 1)); }
   70%  { transform: scale(1.25); }
   100% { transform: scale(1.45); }
 }
