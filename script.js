@@ -321,7 +321,7 @@ function showOverlay(flower, onDone){
   big.draggable = false;
   overlayFlower.appendChild(big);
 
-  overlayTitle.textContent = `C'est ${flower.label}.`;
+  overlayTitle.textContent = `Voici ${flower.label}.`;
   overlayText.textContent = flower.message;
 
   overlay.classList.remove("hidden");
