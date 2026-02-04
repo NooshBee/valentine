@@ -346,6 +346,66 @@ function onFlowerClick(flower){
 });
 }
 
+function lockFlowersClicks(lock){
+  // bloque/débloque les clics sur toutes les fleurs
+  for (const s of flowersState){
+    s.el.style.pointerEvents = lock ? "none" : "auto";
+  }
+}
+
+function gatherFlowersToBouquet(durationMs = 1200){
+  return new Promise((resolve) => {
+    // stop rebonds
+    stopAnimation();
+
+    // éviter que des cartes s’ouvrent pendant l’anim
+    isLocked = true;
+    lockFlowersClicks(true);
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    // centre "bouquet" : un peu au-dessus du milieu (plus joli)
+    const cx = w * 0.5;
+    const cy = h * 0.48;
+
+    // petit éventail : plus on est "loin" dans la liste, plus on s’écarte
+    const total = flowersState.length;
+
+    // transitions CSS (on anime transform)
+    for (let i = 0; i < total; i++){
+      const s = flowersState[i];
+
+      // légère forme ovale (option A+)
+      const t = i / (total - 1);
+      const angle = t * Math.PI * 2;
+
+      // rayon ovale
+      const rx = 70;
+      const ry = 95;
+
+      // dispersion douce autour du centre (évite pile parfaite)
+      const tx = cx + Math.cos(angle) * rx + rand(-14, 14);
+      const ty = cy + Math.sin(angle) * ry + rand(-14, 14);
+
+      // animation via transition (important: set then render)
+      s.el.style.transition = `transform ${durationMs}ms cubic-bezier(.2,.9,.2,1)`;
+      s.x = tx;
+      s.y = ty;
+      renderOne(s);
+    }
+
+    // quand c'est fini
+    setTimeout(() => {
+      // nettoie transition pour la suite
+      for (const s of flowersState){
+        s.el.style.transition = "";
+      }
+      resolve();
+    }, durationMs + 30);
+  });
+}
+
 // ======================
 // GIFT SEQUENCE
 // ======================
