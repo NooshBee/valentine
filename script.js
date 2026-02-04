@@ -45,7 +45,6 @@ const burst = document.getElementById("burst");
 const overlayFlower = document.getElementById("overlayFlower");
 const overlayTitle = document.getElementById("overlayTitle");
 const overlayText = document.getElementById("overlayText");
-const countdownEl = document.getElementById("countdown");
 
 const btnYesWith = document.getElementById("btnYesWith");
 const btnYesWithout = document.getElementById("btnYesWithout");
@@ -86,7 +85,6 @@ function clearTimers(){
   if (countdownTimer) clearInterval(countdownTimer);
   overlayTimer = null;
   countdownTimer = null;
-  countdownEl.textContent = "";
 }
 
 function hideAllScreens(){
