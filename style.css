@@ -267,6 +267,7 @@ body{
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transform: scale(var(--box-scale, 1));
+  transform-origin: center;
 }
 
 .giftBody{
