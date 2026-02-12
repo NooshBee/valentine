@@ -502,7 +502,7 @@ function setupTapToOpenGift(includeBougain){
   // ✅ IMPORTANT : on FORCE la secousse au moment où le cadeau apparaît
   newBtn.style.animation = "giftShake 3.2s ease-in-out infinite";
 
-  const TOTAL_TAPS = 3;
+  const TOTAL_TAPS = 4;
   let taps = 0;
   let giftOpened = false;
 
